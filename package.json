@@ -1,5 +1,5 @@
 {
-  "name": "@waves/seed-provider",
+  "name": "@waves/provider-seed",
   "version": "0.0.2",
   "main": "dist/provider-seed.js",
   "types": "dist/index.d.ts",
