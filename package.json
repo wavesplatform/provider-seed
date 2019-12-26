@@ -1,0 +1,48 @@
+{
+  "name": "@waves/seed-provider",
+  "version": "0.0.2",
+  "main": "dist/provider-seed.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "watch": "webpack --watch",
+    "build": "webpack",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@waves/signer": "0.0.3",
+    "@waves/ts-types": "^0.3.0",
+    "@waves/waves-transactions": "^3.20.2"
+  },
+  "devDependencies": {
+    "@types/jest": "^24.0.24",
+    "jest": "^24.9.0",
+    "ts-jest": "^24.2.0",
+    "ts-loader": "^6.2.1",
+    "typescript": "^3.7.4",
+    "webpack": "^4.41.4",
+    "webpack-cli": "^3.3.10"
+  },
+  "jest": {
+    "collectCoverage": true,
+    "coveragePathIgnorePatterns": [
+      "/node_modules/",
+      "/test/",
+      "/src/libs/"
+    ],
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ],
+    "transform": {
+      "^.+\\.(ts|tsx)$": "ts-jest"
+    },
+    "testMatch": [
+      "**/test/*spec.+(ts)",
+      "**/test/**/*spec.+(ts)"
+    ]
+  }
+}
