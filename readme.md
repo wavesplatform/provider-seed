@@ -33,7 +33,7 @@ Add library initialization to your app.
    const seed = libs.crypto.randomSeed();
    const signer = new Signer({
      // Specify URL of the node on Testnet
-     NODE_URL: 'https://pool.testnet.wavesnodes.com'
+     NODE_URL: 'https://nodes-testnet.wavesnodes.com'
    });
    const provider = new ProviderSeed(seed);
    signer.setProvider(provider);
