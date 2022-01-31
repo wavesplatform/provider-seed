@@ -12,9 +12,11 @@
     "test": "jest"
   },
   "dependencies": {
-    "@waves/signer": "0.0.3",
-    "@waves/ts-types": "^0.3.0",
-    "@waves/waves-transactions": "^3.20.2"
+    "@types/ramda": "^0.26.38",
+    "@waves/signer": "^1.0.7",
+    "@waves/ts-types": "^1.0.2",
+    "@waves/waves-transactions": "^4.2.4",
+    "ramda": "^0.26.1"
   },
   "devDependencies": {
     "@types/jest": "^24.0.24",
