@@ -1,33 +1,39 @@
 import {
-    IConnectOptions,
-    IProvider,
-    ITypedData,
-    IUserData,
-    TLong,
-    TTransactionParamWithType,
+    AuthEvents,
+    ConnectOptions,
+    Handler,
+    Provider,
+    SignerTx,
+    SignedTx,
+    TypedData,
+    UserData,
 } from '@waves/signer';
-import { IWithId, TTransactionWithProofs } from '@waves/ts-types';
+
 import { libs, signTx } from '@waves/waves-transactions';
 
-export class ProviderSeed implements IProvider {
+export type ProviderSignedTx = SignedTx<SignerTx>;
+
+export class ProviderSeed implements Provider {
     private readonly _seed: string;
-    private _options: IConnectOptions = {
+    private _options: ConnectOptions = {
         NETWORK_BYTE: 'W'.charCodeAt(0),
         NODE_URL: 'https://nodes.wavesplatform.com',
     };
+
+    public user: UserData | null = null;
 
     constructor(seed?: string) {
         this._seed = seed || libs.crypto.randomSeed();
     }
 
-    public connect(options: IConnectOptions): Promise<void> {
+    public connect(options: ConnectOptions): Promise<void> {
         this._options = options;
         return Promise.resolve();
     }
 
     public sign(
-        list: Array<TTransactionParamWithType>
-    ): Promise<Array<TTransactionWithProofs<TLong> & IWithId>> {
+        list: Array<SignerTx>
+    ): Promise<Array<ProviderSignedTx>> {
         return Promise.resolve(
             list.map((params) =>
                 signTx(
@@ -41,25 +47,52 @@ export class ProviderSeed implements IProvider {
         ) as any;
     }
 
-    public login(): Promise<IUserData> {
-        return Promise.resolve({
+    public login(): Promise<UserData> {
+        this.user = {
             address: libs.crypto.address(
                 this._seed,
                 this._options.NETWORK_BYTE
             ),
             publicKey: libs.crypto.publicKey(this._seed),
-        });
+        };
+
+        return Promise.resolve(this.user);
     }
 
     public logout(): Promise<void> {
         return Promise.resolve();
     }
 
-    public signTypedData(data: Array<ITypedData>): Promise<string> {
+    public signTypedData(data: Array<TypedData>): Promise<string> {
         return Promise.resolve('// TODO'); // TODO
     }
 
     public signMessage(data: string | number): Promise<string> {
         return Promise.resolve('// TODO'); // TODO
     }
+
+    public on<EVENT extends keyof AuthEvents>(
+        event: EVENT,
+        handler: Handler<AuthEvents[EVENT]>,
+    ): Provider {
+        console.error('Not implemented');
+        return this;
+    }
+
+    public once<EVENT extends keyof AuthEvents>(
+        event: EVENT,
+        handler: Handler<AuthEvents[EVENT]>,
+    ): Provider{
+        console.error('Not implemented');
+        return this;
+    };
+
+    public off<EVENT extends keyof AuthEvents>(
+        event: EVENT,
+        handler: Handler<AuthEvents[EVENT]>,
+    ): Provider {
+        console.error('Not implemented');
+        return this;
+    }
+
 }
