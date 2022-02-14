@@ -1,14 +1,16 @@
 {
   "name": "@waves/provider-seed",
-  "version": "0.2.0",
+  "version": "0.3.1",
   "main": "dist/provider-seed.js",
   "types": "dist/index.d.ts",
   "files": [
-    "dist"
+    "dist",
+    "cjs"
   ],
   "scripts": {
     "watch": "webpack --watch",
-    "build": "webpack",
+    "build": "webpack && npm run build:cjs",
+    "build:cjs": "rm -rf ./cjs && tsc --outDir ./cjs",
     "test": "jest"
   },
   "dependencies": {
