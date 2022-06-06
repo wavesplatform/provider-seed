@@ -13,8 +13,11 @@ import { libs, signTx } from '@waves/waves-transactions';
 
 export type ProviderSignedTx = SignedTx<SignerTx>;
 
+type SeedMaker = string | (() => Promise<string>);
+
 export class ProviderSeed implements Provider {
-    private readonly _seed: string;
+    private _seed?: string;
+    private _seedMaker?: () => Promise<string>;
     private _options: ConnectOptions = {
         NETWORK_BYTE: 'W'.charCodeAt(0),
         NODE_URL: 'https://nodes.wavesplatform.com',
@@ -22,18 +25,27 @@ export class ProviderSeed implements Provider {
 
     public user: UserData | null = null;
 
-    constructor(seed?: string) {
-        this._seed = seed || libs.crypto.randomSeed();
+    constructor(seed?: SeedMaker) {
+        if (seed) {
+            if (typeof seed === 'string') {
+                this._seed = seed;
+            } else if (typeof seed === 'function') {
+                this._seedMaker = seed;
+            }
+        }
     }
 
     public connect(options: ConnectOptions): Promise<void> {
         this._options = options;
+
         return Promise.resolve();
     }
 
-    public sign(
+    public async sign(
         list: Array<SignerTx>
     ): Promise<Array<ProviderSignedTx>> {
+        const seed = await this.getSeed();
+
         return Promise.resolve(
             list.map((params) =>
                 signTx(
@@ -41,19 +53,21 @@ export class ProviderSeed implements Provider {
                         chainId: this._options.NETWORK_BYTE,
                         ...params,
                     } as any,
-                    this._seed
+                    seed
                 )
             )
         ) as any;
     }
 
-    public login(): Promise<UserData> {
+    public async login(): Promise<UserData> {
+        const seed = await this.getSeed();
+
         this.user = {
             address: libs.crypto.address(
-                this._seed,
+                seed,
                 this._options.NETWORK_BYTE
             ),
-            publicKey: libs.crypto.publicKey(this._seed),
+            publicKey: libs.crypto.publicKey(seed),
         };
 
         return Promise.resolve(this.user);
@@ -95,4 +109,15 @@ export class ProviderSeed implements Provider {
         return this;
     }
 
+    private async getSeed(): Promise<string> {
+        if (!this._seed) {
+            if (this._seedMaker) {
+                this._seed = await this._seedMaker();
+            } else {
+                this._seed = libs.crypto.randomSeed();
+            }
+        }
+
+        return this._seed;
+    }
 }
